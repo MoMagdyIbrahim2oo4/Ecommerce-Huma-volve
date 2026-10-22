@@ -1,8 +1,13 @@
+import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/cubit/categories/categories_cubit.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/cubit/products/product_cubit.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/screens/home_screen.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/service/home_service.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme.dart';
-import '../../home/screens/home_screen.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../profile/screens/profile_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -13,15 +18,34 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const CartScreen(),
-    const ProfileScreen(),
-  ];
+  late ApiClient apiClient;
+  late HomeService homeService;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apiClient=ApiClient();
+    homeService=HomeService(apiClient);
+  }
+  
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _screens = [
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+      create: (context) => CategoriesCubit(homeService),
+    ),
+    BlocProvider(
+      create: (context) => ProductCubit(homeService),
+    ),
+      ],
+      child: HomeScreen(),
+    ),
+    const CartScreen(),
+    const ProfileScreen(),
+  ];
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
