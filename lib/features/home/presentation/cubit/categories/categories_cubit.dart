@@ -1,22 +1,25 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:ecommerce_app_huma_volve/features/home/data/models/category_model.dart';
-import 'package:ecommerce_app_huma_volve/features/home/data/service/home_service.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/entities/category_entity.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/use_cases/get_categories_use_case.dart';
 import 'package:meta/meta.dart';
 
 part 'categories_state.dart';
 
 class CategoriesCubit extends Cubit<CategoriesState> {
-  final HomeService homeService;
-  CategoriesCubit(this.homeService) : super(CategoriesCubitInitial());
+  final GetCategoriesUseCase getCategoriesUseCase;
+  CategoriesCubit(this.getCategoriesUseCase) : super(CategoriesCubitInitial());
 
   Future<void> getCategories() async {
     emit(CategoriesCubitLoading());
-    try {
-      final data = await homeService.getCategories();
-      emit(CategoriesCubitSuccess(data));
-    } on DioException catch (e) {
-      emit(CategoriesCubitFailure(e.message ?? 'Something Went Wrong'));
-    }
+    final data = await getCategoriesUseCase.invoke();
+    data.fold(
+      (error) {
+        emit(CategoriesCubitFailure(error.failureMessage));
+      },
+      (cateories) {
+        emit(CategoriesCubitSuccess(cateories));
+      },
+    );
   }
 }

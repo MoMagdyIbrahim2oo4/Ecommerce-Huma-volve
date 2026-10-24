@@ -1,26 +1,18 @@
 import 'package:ecommerce_app_huma_volve/features/home/data/models/category_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/entities/product_entity.dart';
 
-class ProductModel {
-  int? id;
-  String? title;
-  String? slug;
-  int? price;
-  String? description;
-  CategoryModel? category;
-  List<String>? images;
-  String? creationAt;
-  String? updatedAt;
-
-  ProductModel(
-      {this.id,
-      this.title,
-      this.slug,
-      this.price,
-      this.description,
-      this.category,
-      this.images,
-      this.creationAt,
-      this.updatedAt});
+class ProductModel extends ProductEntity {
+  ProductModel({
+    super.id,
+    super.title,
+    super.slug,
+    super.price,
+    super.description,
+    super.category,
+    super.images,
+    super.creationAt,
+    super.updatedAt,
+  });
 
   ProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -31,9 +23,9 @@ class ProductModel {
     category = json['category'] != null
         ? CategoryModel.fromJson(json['category'])
         : null;
-    images = (json['images'] as List<dynamic>?)
-        ?.whereType<String>()
-        .toList() ?? <String>[];
+    images =
+        (json['images'] as List<dynamic>?)?.whereType<String>().toList() ??
+        <String>[];
     creationAt = json['creationAt'];
     updatedAt = json['updatedAt'];
   }

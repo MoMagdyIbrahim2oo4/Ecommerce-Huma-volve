@@ -1,12 +1,19 @@
 import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/repos/home_repo_imp.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/repos/home_repo.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/use_cases/get_categories_use_case.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/use_cases/get_products_use_case.dart';
 import 'package:ecommerce_app_huma_volve/features/home/presentation/cubit/categories/categories_cubit.dart';
 import 'package:ecommerce_app_huma_volve/features/home/presentation/cubit/products/product_cubit.dart';
 import 'package:ecommerce_app_huma_volve/features/home/presentation/screens/home_screen.dart';
-import 'package:ecommerce_app_huma_volve/features/home/data/service/home_service.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/data_source/home_remote_data_source_imp.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/data_source/home_remote_data_source.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/theme.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../profile/screens/profile_screen.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -18,34 +25,36 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
-  late ApiClient apiClient;
-  late HomeService homeService;
+  late final ApiClient apiClient;
+  late final HomeRemoteDataSource homeRemoteDataSource;
+  late final HomeRepo homeRepo;
+  late final GetCategoriesUseCase getCategoriesUseCase;
+  late final GetProductsUseCase getProductsUseCase;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    apiClient=ApiClient();
-    homeService=HomeService(apiClient);
+    apiClient = ApiClient();
+    homeRemoteDataSource = HomeRemoteDataSourceImp(apiClient);
+    homeRepo=HomeRepoImp(homeRemoteDataSource);
+    getCategoriesUseCase=GetCategoriesUseCase(homeRepo);
+    getProductsUseCase=GetProductsUseCase(homeRepo);
   }
-  
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> _screens = [
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-      create: (context) => CategoriesCubit(homeService),
-    ),
-    BlocProvider(
-      create: (context) => ProductCubit(homeService),
-    ),
-      ],
-      child: HomeScreen(),
-    ),
-    const CartScreen(),
-    const ProfileScreen(),
-  ];
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => CategoriesCubit(getCategoriesUseCase)),
+          BlocProvider(create: (context) => ProductCubit(getProductsUseCase)),
+        ],
+        child: HomeScreen(),
+      ),
+      const CartScreen(),
+      const ProfileScreen(),
+    ];
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
