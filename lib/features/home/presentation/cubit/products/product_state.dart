@@ -8,7 +8,7 @@ final class ProductCubitInitial extends ProductState {}
 final class ProductCubitLoading extends ProductState {}
 
 final class ProductCubitSuccess extends ProductState {
-  final List<ProductModel> data;
+  final List<ProductEntity> data;
   ProductCubitSuccess(this.data);
 }
 

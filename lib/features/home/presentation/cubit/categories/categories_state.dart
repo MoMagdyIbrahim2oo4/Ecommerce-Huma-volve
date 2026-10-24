@@ -8,7 +8,7 @@ final class CategoriesCubitInitial extends CategoriesState {}
 final class CategoriesCubitLoading extends CategoriesState {}
 
 final class CategoriesCubitSuccess extends CategoriesState {
-  final List<CategoryModel> data;
+  final List<CategoryEntity> data;
   CategoriesCubitSuccess(this.data);
 }
 

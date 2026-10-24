@@ -185,6 +185,9 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, state) {
                 switch (state) {
                   case ProductCubitInitial():
+                    return SliverToBoxAdapter(
+                      child: SizedBox.shrink()
+                    );
                   case ProductCubitLoading():
                     return SliverToBoxAdapter(
                       child: Center(child: CircularProgressIndicator()),
