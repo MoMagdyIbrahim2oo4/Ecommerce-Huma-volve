@@ -1,3 +1,4 @@
+import 'package:ecommerce_app_huma_volve/core/constants/api_constants.dart';
 import 'package:ecommerce_app_huma_volve/core/constants/api_endpoints.dart';
 import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
 import 'package:ecommerce_app_huma_volve/features/home/data/data_source/home_remote_data_source.dart';
@@ -17,9 +18,14 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
   }
 
   @override
-  Future<List<ProductModel>> getProducts(int productID) async {
+  Future<List<ProductModel>> getProducts(
+    int productID,
+    int limit,
+    int offset,
+  ) async {
     final response = await apiClient.dio.get(
       '${ApiEndpoints.categoriesEndpoint}/$productID/${ApiEndpoints.productsEndpoint}',
+      queryParameters: {ApiConstants.limit: limit, ApiConstants.offset: offset},
     );
     final List jsonData = response.data;
     return jsonData.map((element) => ProductModel.fromJson(element)).toList();
