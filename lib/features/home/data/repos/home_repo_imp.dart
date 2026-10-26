@@ -22,9 +22,15 @@ class HomeRepoImp implements HomeRepo {
   @override
   Future<Either<Failure, List<ProductEntity>>> getProducts(
     int productID,
+    int limit,
+    int offset,
   ) async {
     try {
-      final products = await homeRemoteDataSource.getProducts(productID);
+      final products = await homeRemoteDataSource.getProducts(
+        productID,
+        limit,
+        offset,
+      );
       return Right(products);
     } catch (error) {
       return Left(ErrorHandler.handle(error));

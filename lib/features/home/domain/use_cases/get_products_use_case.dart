@@ -6,6 +6,9 @@ import 'package:ecommerce_app_huma_volve/features/home/domain/repos/home_repo.da
 class GetProductsUseCase {
   final HomeRepo homeRepo;
   GetProductsUseCase(this.homeRepo);
-  Future<Either<Failure, List<ProductEntity>>> invoke(int productID) =>
-      homeRepo.getProducts(productID);
+  Future<Either<Failure, List<ProductEntity>>> invoke(
+    int productID,
+    int limit,
+    int offset,
+  ) => homeRepo.getProducts(productID, limit, offset);
 }
