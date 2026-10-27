@@ -30,4 +30,12 @@ class HomeRemoteDataSourceImp implements HomeRemoteDataSource {
     final List jsonData = response.data;
     return jsonData.map((element) => ProductModel.fromJson(element)).toList();
   }
+
+  @override
+  Future<ProductModel> getProductById(int productId) async {
+    final response = await apiClient.dio.get(
+      '${ApiEndpoints.productsEndpoint}/$productId',
+    );
+    return ProductModel.fromJson(response.data as Map<String, dynamic>);
+  }
 }
